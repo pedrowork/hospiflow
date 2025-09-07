@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String?
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  refreshTokenHash String?
+  createdAt    DateTime @default(now())
+  episodes     Episode[]
+}
+
+model Episode {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  hospitalName String
+  sector       String?
+  bed          String?
+  patientName  String?
+  patientBirth DateTime?
+  type         String   // clinica, obstetrica, pediatrica, maternidade
+  startedAt    DateTime
+  endedAt      DateTime?
+  isMotherBaby Boolean   @default(false)
+  events       Event[]
+  timers       Timer[]
+  checklists   Checklist[]
+  requests     Request[]
+  evidences    Evidence[]
+  reports      Report[]
+}
+
+model Event {
+  id            String   @id @default(uuid())
+  episodeId     String
+  episode       Episode  @relation(fields: [episodeId], references: [id])
+  type          String
+  plannedAt     DateTime?
+  occurredAt    DateTime
+  locationLabel String?
+  gpsLat        Float?
+  gpsLng        Float?
+  severity      String?
+  notes         String?
+  evidences     Evidence[]
+  startTimers   Timer[]  @relation("StartEvent")
+  stopTimers    Timer[]  @relation("StopEvent")
+}
+
+model Timer {
+  id          String  @id @default(uuid())
+  episodeId   String
+  episode     Episode @relation(fields: [episodeId], references: [id])
+  name        String
+  startEvent  Event?  @relation("StartEvent", fields: [startEventId], references: [id])
+  startEventId String?
+  stopEvent   Event?  @relation("StopEvent", fields: [stopEventId], references: [id])
+  stopEventId String?
+  durationSec Int?
+}
+
+model Checklist {
+  id          String   @id @default(uuid())
+  episodeId   String
+  episode     Episode  @relation(fields: [episodeId], references: [id])
+  templateKey String
+  itemKey     String
+  label       String
+  answer      String?
+  answeredAt  DateTime?
+}
+
+model Request {
+  id         String   @id @default(uuid())
+  episodeId  String
+  episode    Episode  @relation(fields: [episodeId], references: [id])
+  category   String
+  title      String
+  createdAt  DateTime @default(now())
+  closedAt   DateTime?
+  status     String
+  slaMinutes Int?
+}
+
+model Evidence {
+  id        String   @id @default(uuid())
+  episodeId String
+  episode   Episode  @relation(fields: [episodeId], references: [id])
+  eventId   String?
+  event     Event?   @relation(fields: [eventId], references: [id])
+  kind      String
+  url       String
+  hashSha256 String?
+  createdAt DateTime @default(now())
+}
+
+model Report {
+  id        String   @id @default(uuid())
+  episodeId String
+  episode   Episode  @relation(fields: [episodeId], references: [id])
+  summary   String?
+  pdfUrl    String?
+  csvUrl    String?
+  createdAt DateTime @default(now())
+  shares    Share[]
+}
+
+model Share {
+  id        String   @id @default(uuid())
+  reportId  String
+  report    Report   @relation(fields: [reportId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  scope     Json?
+}

@@ -1,0 +1,28 @@
+# Rastro Clínico — remete a trilha/auditoria de eventos clínicos.
+
+
+Stack para PWA (Android + iPhone):
+
+Frontend (PWA):
+React ou Next.js (App Router) → ideal para PWA.
+TypeScript (segurança e escalabilidade).
+UI: Material UI (MUI) + TailwindCSS (responsivo).
+Service Workers: Workbox (cache, offline, push).
+IndexedDB / localForage → persistência offline.
+
+Backend (API):
+NestJS (Node.js) + Prisma + PostgreSQL.
+JWT/OAuth2 → autenticação.
+S3 (ou GCP/Azure Blob) para mídia.
+
+Infra:
+Docker (deploy padronizado).
+NGINX como reverse proxy.
+Hospedagem: Vercel/Netlify (frontend) + Railway/Render/AWS/GCP (backend).
+
+Extras (Mobile-like):
+CapacitorJS (se quiser instalar como app “quase nativo”).
+Push Notifications: Firebase Cloud Messaging (Android) + APNs (Apple).
+PWA Manifest + Apple Touch Icons (suporte iOS).
+
+👉 Com esse stack, o PWA vai funcionar em Android e iPhone, com suporte a offline, instalação na tela inicial, push notifications e acesso a recursos modernos.

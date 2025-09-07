@@ -1,0 +1,18 @@
+{
+	"name": "hospiflow",
+	"private": true,
+	"scripts": {
+		"api:dev": "npm --prefix apps/api run start:dev",
+		"web:dev": "npm --prefix apps/web run dev",
+		"dev": "npm-run-all --parallel api:dev web:dev",
+		"api:dev:lan": "cross-env PORT=3001 npm --prefix apps/api run start:dev",
+		"web:dev:lan": "cross-env HOST=0.0.0.0 PORT=3000 NEXT_PUBLIC_API_BASE_URL=http://%LAN_IP%:3001 npm --prefix apps/web run dev",
+		"db:up": "docker compose up -d postgres",
+		"db:down": "docker compose down"
+	},
+	"devDependencies": {
+		"npm-run-all": "^4.1.5",
+		"cross-env": "^7.0.3"
+	}
+}
+
