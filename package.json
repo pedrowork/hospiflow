@@ -2,6 +2,8 @@
 	"name": "hospiflow",
 	"private": true,
 	"scripts": {
+		"build": "npm --prefix apps/web run build",
+		"start": "npm --prefix apps/web run start",
 		"api:dev": "npm --prefix apps/api run start:dev",
 		"web:dev": "npm --prefix apps/web run dev",
 		"dev": "npm-run-all --parallel api:dev web:dev",
